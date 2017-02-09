@@ -13,9 +13,9 @@ node ("docker"){
    stage('Build Docker'){
      unstash name: 'dockerfile'
      unstash name: 'jar'
-     sh 'docker build --no-cache -t maxxton2/demo-service:dev .'
+     docker.build("maxxton2/demo-service:dev")
    }
    stage('Push Docker'){
-     sh 'docker push maxxton2/demo-service:dev'
+     docker.push("maxxton2/demo-service:dev")
    }
 }
