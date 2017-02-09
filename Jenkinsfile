@@ -13,8 +13,6 @@ node {
    }
    stage('Build') {
      // Start build and wait to finish it
-     sh 'oc start-build spring-boot-demo --wait --folow'
-   }
-   stage('Build cleanup'){
+     sh 'oc start-build spring-boot-demo --wait --follow'
    }
 }
