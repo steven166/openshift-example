@@ -3,6 +3,7 @@ node ("maven"){
       git 'https://github.com/steven166/spring-boot-demo.git'
    }
    stage('Build Jar') {
+     sh "chmod 777 ./gradlew"
      sh "./gradlew build"
    }
    stage('Build Docker') {
