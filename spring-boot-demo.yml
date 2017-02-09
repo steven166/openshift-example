@@ -70,51 +70,6 @@ objects:
     annotations:
       description: Keeps track of changes in the application image
     name: ${NAME}
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    annotations:
-      description: Defines how to deploy the application server
-    name: ${NAME}
-  spec:
-    replicas: 1
-    selector:
-      name: ${NAME}
-    strategy:
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          name: ${NAME}
-        name: ${NAME}
-      spec:
-        containers:
-        - image: ' '
-          livenessProbe:
-            httpGet:
-              path: /demo
-              port: 8080
-            initialDelaySeconds: 30
-            timeoutSeconds: 3
-          name: ${NAME}
-          ports:
-          - containerPort: 8080
-          readinessProbe:
-            httpGet:
-              path: /pagecount
-              port: 8080
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-    triggers:
-    - imageChangeParams:
-        automatic: false
-        containerNames:
-        - nodejs-mongodb-example
-        from:
-          kind: ImageStreamTag
-          name: ${NAME}:dev
-      type: ImageChange
-    - type: ConfigChange
 parameters:
 - description: The name assigned to all of the frontend objects defined in this template.
   displayName: Name

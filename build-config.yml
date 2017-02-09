@@ -17,20 +17,16 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: config-server:${TAG}
+        name: ${NAME}:${TAG}
     runPolicy: Serial
     source:
       git:
         uri: ${GIT_URL}
-      sourceSecret:
-        name: gitcred
       type: Git
     strategy:
       sourceStrategy:
-        from:
-          kind: ImageStreamTag
-          name: s2i-java:latest
-          namespace: openshift
+        kind: DockerImage
+        name: 'jorgemoralespou/s2i-java:latest'
       type: Source
 
 
