@@ -5,7 +5,7 @@ node ("maven"){
    stage('Build Jar') {
      sh "chmod 777 ./gradlew"
      sh "./gradlew build"
-     stash name: 'jar', includes: build/libs/demo.jar,Dockerfile
+     stash includes: './build/libs/demo.jar,./Dockerfile', name: 'jar'
    }
 }
 node ("docker"){
