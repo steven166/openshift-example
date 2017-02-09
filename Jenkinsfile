@@ -1,10 +1,14 @@
-node ("maven"){
+node {
    stage('Checkout') {
       // Checkout repository
       git 'https://github.com/steven166/spring-boot-demo.git'
    }
    stage('Build preparations'){
-      // Create Build configuration
+      try{
+        // Delete old Build Config
+        sh 'oc delete build/spring-boot-demo'
+      }catch(Exception e){}
+      // Create Build Config
       sh 'oc process -f build-config.yml -v NAME=spring-boot-demo -v TAG=dev -v GIT_URL=https://github.com/steven166/spring-boot-demo.git | oc create -f -'
    }
    stage('Build') {
@@ -12,6 +16,5 @@ node ("maven"){
      sh 'oc start-build spring-boot-demo --wait --folow'
    }
    stage('Build cleanup'){
-     sh 'oc delete build/spring-boot-demo'
    }
 }
