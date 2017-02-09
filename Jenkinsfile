@@ -5,11 +5,13 @@ node ("maven"){
    stage('Build Jar') {
      sh "chmod 777 ./gradlew"
      sh "./gradlew build"
-     stash includes: './build/libs/demo.jar,./Dockerfile', name: 'jar'
+     stash includes: 'Dockerfile', name: 'dockerfile'
+     stash includes: 'build/libs/**', name: 'jar'
    }
 }
 node ("docker"){
    stage('Build Docker'){
+     unstash name: 'dockerfile'
      unstash name: 'jar'
      sh 'docker build --no-cache -t maxxton2/demo-service:dev .'
    }
