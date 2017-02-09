@@ -1,0 +1,129 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Template
+labels:
+  template: spring-boot-example
+message: A Jenkins server will be automatically instantiated in this project to manage
+  the Pipeline BuildConfig created by this template.  You will be able to log in to
+  it using your OpenShift user credentials.
+metadata:
+  annotations:
+    description: This example showcases the new Jenkins Pipeline integration in OpenShift,
+      which performs continuous integration and deployment right on the platform.
+      The template contains a Jenkinsfile - a definition of a multi-stage CI/CD process
+      - that leverages the underlying OpenShift platform for dynamic and scalable
+      builds. OpenShift integrates the status of your pipeline builds into the web
+      console allowing you to see your entire application lifecycle in a single view.
+    iconClass: icon-jenkins
+    tags: instant-app,jenkins
+  name: spring-boot-example
+  namespace: openshift
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      pipeline.alpha.openshift.io/uses: '[{"name": "${NAME}", "namespace": "", "kind":
+        "DeploymentConfig"}]'
+    creationTimestamp: null
+    labels:
+      name: ${NAME}-pipeline
+    name: ${NAME}-pipeline
+  spec:
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: Jenkinsfile
+      type: JenkinsPipeline
+    source:
+      type: "Git"
+      git:
+        uri: "https://github.com/steven166/spring-boot-demo"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "${DATABASE_SERVICE_NAME}",
+        "namespace": "", "kind": "Service"}]'
+    name: ${NAME}
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      targetPort: 8080
+    selector:
+      name: ${NAME}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${NAME}
+  spec:
+    host: ${NAME}-maxxton2.10.0.75.2.xip.io
+    to:
+      kind: Service
+      name: ${NAME}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the application image
+    name: ${NAME}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Defines how to deploy the application server
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      name: ${NAME}
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          name: ${NAME}
+        name: ${NAME}
+      spec:
+        containers:
+        - image: ' '
+          livenessProbe:
+            httpGet:
+              path: /demo
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+          name: ${NAME}
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /pagecount
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
+    triggers:
+    - imageChangeParams:
+        automatic: false
+        containerNames:
+        - nodejs-mongodb-example
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:dev
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: The name assigned to all of the frontend objects defined in this template.
+  displayName: Name
+  name: NAME
+  required: true
+  value: todo-service
+- description: The URL of the repository with your application source code.
+  displayName: Git Repository URL
+  name: SOURCE_REPOSITORY_URL
+  required: true
+  value: https://github.com/steven166/spring-boot-demo
+

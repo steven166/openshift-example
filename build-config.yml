@@ -1,0 +1,48 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Template
+metadata:
+  name: build-template
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: config-server:${TAG}
+    runPolicy: Serial
+    source:
+      git:
+        uri: ${GIT_URL}
+      sourceSecret:
+        name: gitcred
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: s2i-java:latest
+          namespace: openshift
+      type: Source
+
+
+
+parameters:
+- description: The git url.
+  name: GIT_URL
+  required: true
+- description: Name
+  name: NAME
+  required: true
+- description: The image tag.
+  name: TAG
+  required: true
+  value: dev

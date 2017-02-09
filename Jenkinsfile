@@ -1,21 +1,17 @@
 node ("maven"){
-   stage('Preparation') {
+   stage('Checkout') {
+      // Checkout repository
       git 'https://github.com/steven166/spring-boot-demo.git'
    }
-   stage('Build Jar') {
-     sh "chmod 777 ./gradlew"
-     sh "./gradlew build"
-     stash includes: 'Dockerfile', name: 'dockerfile'
-     stash includes: 'build/libs/**', name: 'jar'
+   stage('Build preparations'){
+      // Create Build configuration
+      sh 'oc process -f build-config.yml -v NAME=spring-boot-demo -v TAG=dev -v GIT_URL=https://github.com/steven166/spring-boot-demo.git | oc create -f -'
    }
-}
-node ("docker"){
-   stage('Build Docker'){
-     unstash name: 'dockerfile'
-     unstash name: 'jar'
-     docker.build("maxxton2/demo-service:dev")
+   stage('Build') {
+     // Start build and wait to finish it
+     sh 'oc start-build spring-boot-demo --wait --folow'
    }
-   stage('Push Docker'){
-     docker.push("maxxton2/demo-service:dev")
+   stage('Build cleanup'){
+     sh 'oc delete build/spring-boot-demo'
    }
 }
