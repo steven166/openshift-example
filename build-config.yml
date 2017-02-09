@@ -25,8 +25,10 @@ objects:
       type: Git
     strategy:
       sourceStrategy:
-        kind: DockerImage
-        name: 'jorgemoralespou/s2i-java:latest'
+        from:
+           kind: ImageStreamTag
+           namespace: openshift
+           name: 's2i-java:latest'
       type: Source
 
 
