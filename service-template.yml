@@ -49,7 +49,7 @@ objects:
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfile: Jenkinsfile
+        jenkinsfilePath: Jenkinsfile
 
 - apiVersion: v1
   kind: ImageStream
