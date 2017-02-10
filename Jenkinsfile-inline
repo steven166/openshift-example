@@ -1,14 +1,15 @@
 node {
 
-  def NAME = ${NAME}
-  def GIT_URL = ${GIT_URL}
-  def GIT_REF = ${GIT_REF}
-  def GIT_DIR = ${GIT_DIR}
+  def NAME = '${NAME}'
+  def GIT_URL = '${GIT_URL}'
+  def GIT_REF = '${GIT_REF}'
+  def GIT_DIR = '${GIT_DIR}'
 
   stage('Checkout Pipeline') {
     // Checkout repository
     git 'https://github.com/steven166/openshift-example.git'
   }
   // Start Jenkinsfile
-  load 'Jenkinsfile'
+  def jenkinsfile = load 'Jenkinsfile'
+  jenkinsfile.start(NAME, GIT_URL, GIT_REF, GIT_DIR);
 }

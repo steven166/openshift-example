@@ -46,20 +46,20 @@ objects:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
         jenkinsfile: |
-node {
+          node {
 
-  def NAME = ${NAME}
-  def GIT_URL = ${GIT_URL}
-  def GIT_REF = ${GIT_REF}
-  def GIT_DIR = ${GIT_DIR}
+            def NAME = '${NAME}'
+            def GIT_URL = '${GIT_URL}'
+            def GIT_REF = '${GIT_REF}'
+            def GIT_DIR = '${GIT_DIR}'
 
-  stage('Checkout Pipeline') {
-    // Checkout repository
-    git 'https://github.com/steven166/spring-boot-demo.git'
-  }
-  // Start Jenkinsfile
-  load 'Jenkinsfile'
-}
+            stage('Checkout Pipeline') {
+              // Checkout repository
+              git 'https://github.com/steven166/spring-boot-demo.git'
+            }
+            // Start Jenkinsfile
+            load 'Jenkinsfile'
+          }
 
 - apiVersion: v1
   kind: ImageStream
