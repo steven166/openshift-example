@@ -11,5 +11,5 @@ node {
   }
   // Start Jenkinsfile
   def jenkinsfile = new File('Jenkinsfile')
-  evaluate(jenkinsfile);
+  jenkinsfile.start(NAME, GIT_URL, GIT_REF, GIT_DIR);
 }

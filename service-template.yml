@@ -21,7 +21,7 @@ parameters:
   displayName: Git Repository URL
   name: GIT_URL
   required: true
-  value: https://github.com/steven166/spring-boot-demo
+  value: https://github.com/steven166/openshift-example
 - description: Branch or Tag in the Repository to checkout
   displayName: Git Branch or Tag
   name: GIT_REF
@@ -42,25 +42,14 @@ objects:
       name: ${NAME}-pipeline
     name: ${NAME}-pipeline
   spec:
+    source:
+      type: Git
+      git:
+        uri: ${GIT_URL}
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfile: |
-          node {
-
-            def NAME = '${NAME}'
-            def GIT_URL = '${GIT_URL}'
-            def GIT_REF = '${GIT_REF}'
-            def GIT_DIR = '${GIT_DIR}'
-
-            stage('Checkout Pipeline') {
-              // Checkout repository
-              git 'https://github.com/steven166/openshift-example.git'
-            }
-            // Start Jenkinsfile
-            def jenkinsfile = new File('Jenkinsfile')
-            evaluate(jenkinsfile);
-          }
+        jenkinsfile: Jenkinsfile
 
 - apiVersion: v1
   kind: ImageStream
