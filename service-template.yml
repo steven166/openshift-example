@@ -27,10 +27,11 @@ parameters:
   name: GIT_REF
   required: true
   value: master
-- description: Name of the secret to use for the Repository
-  displayName: Git Secret
-  name: GIT_SECRET
-  required: false
+- description: SubFolder inside git to build
+  displayName: SubFolder
+  name: GIT_DIR
+  required: true
+  value: .
 
 objects:
 - apiVersion: v1
@@ -42,16 +43,24 @@ objects:
     name: ${NAME}-pipeline
   spec:
     strategy:
-      jenkinsPipelineStrategy:
-        jenkinsfilePath: Jenkinsfile
       type: JenkinsPipeline
-    source:
-      type: "Git"
-      git:
-        uri: ${GIT_URL}
-        ref: ${GIT_REF}
-      sourceSecret:
-        name: ${GIT_SECRET}
+      jenkinsPipelineStrategy:
+        jenkinsfile: |
+node {
+
+  def NAME = ${NAME}
+  def GIT_URL = ${GIT_URL}
+  def GIT_REF = ${GIT_REF}
+  def GIT_DIR = ${GIT_DIR}
+
+  stage('Checkout Pipeline') {
+    // Checkout repository
+    git 'https://github.com/steven166/spring-boot-demo.git'
+  }
+  // Start Jenkinsfile
+  load 'Jenkinsfile'
+}
+
 - apiVersion: v1
   kind: ImageStream
   metadata:
