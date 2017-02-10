@@ -55,10 +55,11 @@ objects:
 
             stage('Checkout Pipeline') {
               // Checkout repository
-              git 'https://github.com/steven166/spring-boot-demo.git'
+              git 'https://github.com/steven166/openshift-example.git'
             }
             // Start Jenkinsfile
-            load 'Jenkinsfile'
+            def jenkinsfile = new File('Jenkinsfile')
+            evaluate(jenkinsfile);
           }
 
 - apiVersion: v1

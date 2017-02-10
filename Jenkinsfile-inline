@@ -10,6 +10,6 @@ node {
     git 'https://github.com/steven166/openshift-example.git'
   }
   // Start Jenkinsfile
-  def jenkinsfile = load 'Jenkinsfile'
-  jenkinsfile.start(NAME, GIT_URL, GIT_REF, GIT_DIR);
+  def jenkinsfile = new File('Jenkinsfile')
+  evaluate(jenkinsfile);
 }
