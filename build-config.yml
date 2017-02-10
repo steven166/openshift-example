@@ -53,3 +53,7 @@ parameters:
   name: GIT_DIR
   required: true
   value: .
+- description: The image tag.
+  name: TAG
+  required: true
+  value: dev
