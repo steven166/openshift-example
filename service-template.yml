@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: service-template
+message: Template for adding a pipeline for a Microservice
+metadata:
+  annotations:
+    description: Template for adding a pipeline for a Microservice
+    iconClass: icon-jenkins
+    tags: instant-app,jenkins
+  name: service-template
+  namespace: openshift
+
+parameters:
+- description: The name of the service
+  displayName: Name
+  name: NAME
+  required: true
+  value: todo-service
+- description: The URL of the repository with your application source code.
+  displayName: Git Repository URL
+  name: GIT_URL
+  required: true
+  value: https://github.com/steven166/spring-boot-demo
+- description: Branch or Tag in the Repository to checkout
+  displayName: Git Branch or Tag
+  name: GIT_REF
+  required: true
+  value: master
+- description: Name of the secret to use for the Repository
+  displayName: Git Secret
+  name: GIT_SECRET
+  required: false
+
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: ${NAME}-pipeline
+    name: ${NAME}-pipeline
+  spec:
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: Jenkinsfile
+      type: JenkinsPipeline
+    source:
+      type: "Git"
+      git:
+        uri: ${GIT_URL}
+        ref: ${GIT_REF}
+      sourceSecret:
+        name: ${GIT_SECRET}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the application image
+    name: ${NAME}
+
